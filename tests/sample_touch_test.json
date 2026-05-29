@@ -1,0 +1,15 @@
+{
+  "board": "cyd_28",
+  "image": "demo.bin",
+  "steps": [
+    {
+      "tap": [120, 280]
+    },
+    {
+      "wait_ms": 500
+    },
+    {
+      "screenshot": "menu.png"
+    }
+  ]
+}

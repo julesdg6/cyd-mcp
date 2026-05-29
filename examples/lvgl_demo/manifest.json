@@ -1,0 +1,9 @@
+{
+  "name": "lvgl_demo",
+  "boot_log": [
+    "ESP-IDF synthetic boot",
+    "LVGL initialised",
+    "Rendered demo widgets"
+  ],
+  "initial_screen": "lvgl-home"
+}

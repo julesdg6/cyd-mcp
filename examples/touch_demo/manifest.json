@@ -1,0 +1,9 @@
+{
+  "name": "touch_demo",
+  "boot_log": [
+    "ESP-IDF synthetic boot",
+    "Touch controller initialised",
+    "Touch demo ready"
+  ],
+  "initial_screen": "touch-home"
+}

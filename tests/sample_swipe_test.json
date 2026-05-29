@@ -1,0 +1,15 @@
+{
+  "board": "cyd_35",
+  "image": "demo.bin",
+  "steps": [
+    {
+      "swipe": [40, 220, 240, 220, 300]
+    },
+    {
+      "wait_ms": 250
+    },
+    {
+      "screenshot": "swipe-result.png"
+    }
+  ]
+}
