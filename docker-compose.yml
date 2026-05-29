@@ -1,0 +1,27 @@
+services:
+  cyd-mcp:
+    build:
+      context: .
+    container_name: cyd-mcp
+    environment:
+      TZ: Europe/London
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 32320
+      WEB_PORT: 32321
+      NOVNC_PORT: 32322
+      CYD_WORKSPACE: /workspace
+      CYD_IMAGE_DIR: /images
+      CYD_OUTPUT_DIR: /output
+      CYD_DEFAULT_BOARD: cyd_28
+      ESP_IDF_VERSION: stable
+      QEMU_TARGET: esp32
+    ports:
+      - "32320:32320"
+      - "32321:32321"
+      - "32322:32322"
+    volumes:
+      - ./config:/config
+      - ./workspace:/workspace
+      - ./images:/images
+      - ./output:/output
+      - ./cache:/cache

@@ -1,0 +1,18 @@
+{
+  "name": "cyd_40",
+  "chip": "esp32-s3",
+  "resolution": {
+    "width": 480,
+    "height": 480
+  },
+  "rotation": 0,
+  "touch": {
+    "type": "synthetic",
+    "real_hardware": "gt911"
+  },
+  "display": {
+    "qemu_backend": "rgb_panel",
+    "real_hardware": "st7796"
+  },
+  "notes": "Virtual CYD 4 inch profile for square-screen UI tests."
+}

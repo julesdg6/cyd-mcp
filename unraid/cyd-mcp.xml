@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>cyd-mcp</Name>
+  <Repository>julesdg6/cyd-mcp</Repository>
+  <Network>bridge</Network>
+  <Shell>sh</Shell>
+  <Config Name="MCP API Endpoint" Target="32320" Default="32320" Mode="tcp" Type="Port" Display="always" Required="true" Mask="false">32320</Config>
+  <Config Name="Web Dashboard" Target="32321" Default="32321" Mode="tcp" Type="Port" Display="always" Required="true" Mask="false">32321</Config>
+  <Config Name="noVNC Display Viewer" Target="32322" Default="32322" Mode="tcp" Type="Port" Display="always" Required="true" Mask="false">32322</Config>
+  <Config Name="/config" Target="/config" Default="/mnt/user/appdata/cyd-mcp" Mode="rw" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/cyd-mcp</Config>
+  <Config Name="/workspace" Target="/workspace" Default="/mnt/user/cyd-workspace" Mode="rw" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/cyd-workspace</Config>
+  <Config Name="/images" Target="/images" Default="/mnt/user/cyd-images" Mode="rw" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/cyd-images</Config>
+  <Config Name="/output" Target="/output" Default="/mnt/user/cyd-output" Mode="rw" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/cyd-output</Config>
+  <Config Name="/cache" Target="/cache" Default="/mnt/user/appdata/cyd-mcp/cache" Mode="rw" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/cyd-mcp/cache</Config>
+  <Config Name="TZ" Target="TZ" Default="Europe/London" Mode="" Type="Variable" Display="always" Required="true" Mask="false">Europe/London</Config>
+  <Config Name="MCP_HOST" Target="MCP_HOST" Default="0.0.0.0" Mode="" Type="Variable" Display="always" Required="true" Mask="false">0.0.0.0</Config>
+  <Config Name="MCP_PORT" Target="MCP_PORT" Default="32320" Mode="" Type="Variable" Display="always" Required="true" Mask="false">32320</Config>
+  <Config Name="WEB_PORT" Target="WEB_PORT" Default="32321" Mode="" Type="Variable" Display="always" Required="true" Mask="false">32321</Config>
+  <Config Name="NOVNC_PORT" Target="NOVNC_PORT" Default="32322" Mode="" Type="Variable" Display="always" Required="true" Mask="false">32322</Config>
+  <Config Name="CYD_WORKSPACE" Target="CYD_WORKSPACE" Default="/workspace" Mode="" Type="Variable" Display="always" Required="true" Mask="false">/workspace</Config>
+  <Config Name="CYD_IMAGE_DIR" Target="CYD_IMAGE_DIR" Default="/images" Mode="" Type="Variable" Display="always" Required="true" Mask="false">/images</Config>
+  <Config Name="CYD_OUTPUT_DIR" Target="CYD_OUTPUT_DIR" Default="/output" Mode="" Type="Variable" Display="always" Required="true" Mask="false">/output</Config>
+  <Config Name="CYD_DEFAULT_BOARD" Target="CYD_DEFAULT_BOARD" Default="cyd_28" Mode="" Type="Variable" Display="always" Required="true" Mask="false">cyd_28</Config>
+  <Config Name="ESP_IDF_VERSION" Target="ESP_IDF_VERSION" Default="stable" Mode="" Type="Variable" Display="always" Required="true" Mask="false">stable</Config>
+  <Config Name="QEMU_TARGET" Target="QEMU_TARGET" Default="esp32" Mode="" Type="Variable" Display="always" Required="true" Mask="false">esp32</Config>
+</Container>
