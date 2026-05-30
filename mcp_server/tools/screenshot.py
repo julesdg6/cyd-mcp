@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 from mcp_server.config import SCREENSHOT_DIR, ensure_runtime_directories
-from mcp_server.render import write_placeholder_png
+from mcp_server.render import write_screenshot_png
 from mcp_server.state import append_log, load_state, save_state
 from mcp_server.tools.boards import get_board
 
@@ -20,12 +20,15 @@ def capture_screenshot(filename: str | None = None) -> dict:
     elif not filename.endswith(".png"):
         filename = f"{filename}.png"
     path = SCREENSHOT_DIR / Path(filename).name
-    write_placeholder_png(path)
+    events = list(state.get("events", []))
+    current_screen = state.get("current_screen", "home")
+    resolution = board["resolution"]
+    write_screenshot_png(path, resolution["width"], resolution["height"], current_screen, events)
     metadata = {
         "board": state["board"],
-        "resolution": board["resolution"],
-        "current_screen": state.get("current_screen", "home"),
-        "events": len(state.get("events", [])),
+        "resolution": resolution,
+        "current_screen": current_screen,
+        "events": len(events),
     }
     path.with_suffix(path.suffix + ".json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
     state["last_screenshot"] = str(path)

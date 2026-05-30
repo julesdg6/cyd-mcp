@@ -2,12 +2,56 @@ from __future__ import annotations
 
 import json
 import os
+import struct
 import tempfile
 import unittest
+import zlib
 from pathlib import Path
 
 
 class ToolWorkflowTests(unittest.TestCase):
+    @staticmethod
+    def _read_png(path: Path) -> tuple[int, int, bytes]:
+        data = path.read_bytes()
+        if not data.startswith(b"\x89PNG\r\n\x1a\n"):
+            raise AssertionError("Not a PNG file")
+
+        offset = 8
+        width = height = None
+        compressed = bytearray()
+        while offset < len(data):
+            length = struct.unpack(">I", data[offset : offset + 4])[0]
+            chunk_type = data[offset + 4 : offset + 8]
+            chunk_data = data[offset + 8 : offset + 8 + length]
+            offset += length + 12
+            if chunk_type == b"IHDR":
+                width, height = struct.unpack(">II", chunk_data[:8])
+            elif chunk_type == b"IDAT":
+                compressed.extend(chunk_data)
+            elif chunk_type == b"IEND":
+                break
+
+        if width is None or height is None:
+            raise AssertionError("Missing PNG IHDR")
+
+        decoded = zlib.decompress(bytes(compressed))
+        row_width = width * 3
+        pixels = bytearray()
+        pointer = 0
+        for _ in range(height):
+            filter_type = decoded[pointer]
+            pointer += 1
+            if filter_type != 0:
+                raise AssertionError(f"Unsupported PNG filter: {filter_type}")
+            pixels.extend(decoded[pointer : pointer + row_width])
+            pointer += row_width
+        return width, height, bytes(pixels)
+
+    @staticmethod
+    def _pixel_at(pixels: bytes, width: int, x: int, y: int) -> tuple[int, int, int]:
+        offset = (y * width + x) * 3
+        return tuple(pixels[offset : offset + 3])
+
     def setUp(self) -> None:
         self.tempdir = tempfile.TemporaryDirectory()
         self.root = Path(self.tempdir.name)
@@ -53,6 +97,7 @@ class ToolWorkflowTests(unittest.TestCase):
         import mcp_server.tools.run
         import mcp_server.tools.screenshot
         import mcp_server.tools.test_runner
+        import mcp_server.tools.touch
 
         self.config = importlib.reload(mcp_server.config)
         importlib.reload(mcp_server.state)
@@ -61,6 +106,7 @@ class ToolWorkflowTests(unittest.TestCase):
         self.run = importlib.reload(mcp_server.tools.run)
         self.screenshot = importlib.reload(mcp_server.tools.screenshot)
         self.test_runner = importlib.reload(mcp_server.tools.test_runner)
+        self.touch = importlib.reload(mcp_server.tools.touch)
 
     def tearDown(self) -> None:
         self.tempdir.cleanup()
@@ -72,14 +118,27 @@ class ToolWorkflowTests(unittest.TestCase):
 
         run_result = self.run.run_project(str(self.project_dir), "cyd_28")
         self.assertTrue(run_result["success"])
+        self.assertTrue(self.screenshot.capture_screenshot("baseline")["path"].endswith("baseline.png"))
+        self.touch.tap(120, 280)
         screenshot = self.screenshot.capture_screenshot()
-        self.assertTrue(Path(screenshot["path"]).exists())
+        screenshot_path = Path(screenshot["path"])
+        self.assertTrue(screenshot_path.exists())
+        self.assertGreater(screenshot_path.stat().st_size, 68)
+
+        width, height, pixels = self._read_png(screenshot_path)
+        self.assertEqual((width, height), (240, 320))
+        self.assertEqual(self._pixel_at(pixels, width, 120, 280), (244, 96, 96))
+        self.assertGreater(len(set(pixels[:: 3 * 97])), 3)
 
     def test_list_images_and_run_test(self) -> None:
         self.assertEqual(self.images.list_images(), ["demo.bin"])
         report = self.test_runner.run_test("sample_touch_test.json")
         self.assertTrue(report["success"])
         self.assertTrue(Path(report["report_path"]).exists())
+        screenshot = Path(report["steps_executed"][-1]["path"])
+        width, height, pixels = self._read_png(screenshot)
+        self.assertEqual((width, height), (240, 320))
+        self.assertEqual(self._pixel_at(pixels, width, 120, 280), (244, 96, 96))
 
 
 if __name__ == "__main__":
